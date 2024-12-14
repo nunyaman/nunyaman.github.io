@@ -8,9 +8,8 @@
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js"></script>
-
   <script>
-    // Firebase Configuration
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDPv7NW1ktMq8J6FO0mSaHPAXbGv9Nx3wo",
       authDomain: "spend-manager-869f4.firebaseapp.com",
@@ -23,35 +22,6 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-
-    // Login Function
-    function login() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      auth.signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          alert('Login successful!');
-          window.location.href = 'index.html'; // Redirect to main app
-        })
-        .catch((error) => {
-          alert(error.message);
-        });
-    }
-
-    // Signup Function
-    function signup() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      auth.createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          alert('Signup successful! You can now log in.');
-        })
-        .catch((error) => {
-          alert(error.message);
-        });
-    }
   </script>
 </head>
 <body>
@@ -66,5 +36,17 @@
     <button type="button" onclick="login()">Login</button>
     <button type="button" onclick="signup()">Sign Up</button>
   </form>
-</body>
-</html>
+
+  <script>
+    // Login Function
+    function login() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          alert('Login successful!');
+          window.location.href = 'index.html'; // Redirect to main app
+        })
+        .catch((error) => {
+          alert(error
