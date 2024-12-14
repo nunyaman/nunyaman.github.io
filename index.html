@@ -5,38 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spend Manager</title>
 
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-firestore.js"></script>
-
-    <script>
-      // Firebase configuration
-      const firebaseConfig = {
-        apiKey: "AIzaSyDPv7NW1ktMq8J6FO0mSaHPAXbGv9Nx3wo",
-        authDomain: "spend-manager-869f4.firebaseapp.com",
-        projectId: "spend-manager-869f4",
-        storageBucket: "spend-manager-869f4.firebasestorage.app",
-        messagingSenderId: "881075098776",
-        appId: "1:881075098776:web:ddc7d36bb5f009123daced"
-      };
-
-      // Initialize Firebase
-      firebase.initializeApp(firebaseConfig);
-
-      // Initialize Firestore and Auth
-      const db = firebase.firestore();
-      const auth = firebase.auth();
-
-      // Check if the user is authenticated when the page loads
-      window.onload = function() {
-        const user = firebase.auth().currentUser;
-        if (!user) {
-          // User is not logged in, redirect to login page
-          window.location.href = 'login.html';
-        }
-      };
-    </script>
+    </head>
 
     <style>
         body {
