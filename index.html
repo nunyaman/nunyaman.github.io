@@ -4,43 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spend Manager</title>
-
     <style>
-        /* Global Styles */
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f4f6f9;
-            color: #333;
+            background-color: #f5f5f5;
         }
 
         .container {
             background: #fff;
             padding: 20px;
-            border-radius: 12px;
+            border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 500px;
-            margin: 20px;
+            max-width: 400px;
+            box-sizing: border-box;
         }
 
-        h1, h3 {
+        h1 {
             text-align: center;
             margin-bottom: 20px;
         }
 
         input, select, button {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             margin: 10px 0;
             border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 5px;
         }
 
         button {
@@ -48,7 +44,6 @@
             color: white;
             border: none;
             cursor: pointer;
-            font-weight: bold;
         }
 
         button:hover {
@@ -59,33 +54,33 @@
             margin-top: 20px;
         }
 
+        .summary div {
+            margin: 5px 0;
+        }
+
         .progress-bar {
             width: 100%;
-            background-color: #f3f3f3;
-            border-radius: 10px;
             height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
             margin: 10px 0;
         }
 
-        .progress {
+        .progress-bar span {
+            display: block;
             height: 100%;
-            background-color: #4caf50;
-            border-radius: 10px;
+            border-radius: 5px;
         }
 
-        /* Mobile Optimization */
-        @media (max-width: 600px) {
-            .container {
-                margin: 10px;
-            }
+        .reset-btn {
+            background-color: #FF4C4C;
+        }
 
-            input, select, button {
-                font-size: 14px;
-            }
+        .reset-btn:hover {
+            background-color: #D43F3F;
         }
     </style>
 </head>
-
 <body>
     <div class="container">
         <h1>Spend Manager</h1>
@@ -112,61 +107,34 @@
             <div>Miscellaneous: $<span id="miscBudget">0.00</span></div>
         </div>
 
-        <!-- Progress Bars -->
-        <div class="progress-bar">
-            <div id="foodProgress" class="progress" style="width: 0;"></div>
+        <div class="progress-bar" id="foodProgressBar">
+            <span id="foodProgress" style="width: 0%; background-color: #4CAF50;"></span>
         </div>
-        <div class="progress-bar">
-            <div id="gasProgress" class="progress" style="width: 0;"></div>
+        <div class="progress-bar" id="gasProgressBar">
+            <span id="gasProgress" style="width: 0%; background-color: #4CAF50;"></span>
         </div>
-        <div class="progress-bar">
-            <div id="miscProgress" class="progress" style="width: 0;"></div>
+        <div class="progress-bar" id="miscProgressBar">
+            <span id="miscProgress" style="width: 0%; background-color: #4CAF50;"></span>
         </div>
 
-        <!-- Reset Budget Button -->
-        <button onclick="resetBudgets()">Reset Budgets</button>
-
-        <!-- Transaction History -->
-        <h3>Transaction History:</h3>
-        <div id="transactionHistory"></div>
+        <button class="reset-btn" onclick="resetBudgets()">Reset Budgets</button>
     </div>
 
     <script>
         let foodBudget = 0.0;
         let gasBudget = 0.0;
         let miscBudget = 0.0;
-        let transactions = [];
 
-        // Function to load budgets from localStorage
+        // Load the budget and transaction data from localStorage
         function loadBudgets() {
             foodBudget = parseFloat(localStorage.getItem('foodBudget')) || 0.0;
             gasBudget = parseFloat(localStorage.getItem('gasBudget')) || 0.0;
             miscBudget = parseFloat(localStorage.getItem('miscBudget')) || 0.0;
 
-            document.getElementById('foodBudget').textContent = foodBudget.toFixed(2);
-            document.getElementById('gasBudget').textContent = gasBudget.toFixed(2);
-            document.getElementById('miscBudget').textContent = miscBudget.toFixed(2);
-
-            displayTransactions();
-            updateProgressBars();
+            updateUI();
         }
 
-        // Function to update progress bars based on budget
-        function updateProgressBars() {
-            const totalFoodBudget = parseFloat(localStorage.getItem('foodBudget')) || 0;
-            const totalGasBudget = parseFloat(localStorage.getItem('gasBudget')) || 0;
-            const totalMiscBudget = parseFloat(localStorage.getItem('miscBudget')) || 0;
-
-            const foodProgress = (foodBudget / totalFoodBudget) * 100;
-            const gasProgress = (gasBudget / totalGasBudget) * 100;
-            const miscProgress = (miscBudget / totalMiscBudget) * 100;
-
-            document.getElementById('foodProgress').style.width = `${foodProgress}%`;
-            document.getElementById('gasProgress').style.width = `${gasProgress}%`;
-            document.getElementById('miscProgress').style.width = `${miscProgress}%`;
-        }
-
-        // Function to set budgets
+        // Set the budgets and save them to localStorage
         function setBudgets() {
             const foodInput = document.getElementById('foodBudgetInput');
             const gasInput = document.getElementById('gasBudgetInput');
@@ -180,101 +148,91 @@
             localStorage.setItem('gasBudget', gasBudget);
             localStorage.setItem('miscBudget', miscBudget);
 
-            document.getElementById('foodBudget').textContent = foodBudget.toFixed(2);
-            document.getElementById('gasBudget').textContent = gasBudget.toFixed(2);
-            document.getElementById('miscBudget').textContent = miscBudget.toFixed(2);
-
+            updateUI();
             foodInput.value = '';
             gasInput.value = '';
             miscInput.value = '';
-            updateProgressBars();
         }
 
-        // Function to add spend
+        // Add a spending amount to a category and update the UI
         function addSpend() {
             const amountInput = document.getElementById('amountInput');
             const categorySelect = document.getElementById('categorySelect');
             const amount = parseFloat(amountInput.value);
             const category = categorySelect.value;
 
-            if (!amount || amount <= 0) {
+            if (!isNaN(amount) && amount > 0) {
+                switch (category) {
+                    case 'Food':
+                        if (foodBudget - amount >= 0) {
+                            foodBudget -= amount;
+                            localStorage.setItem('foodBudget', foodBudget);
+                        } else {
+                            alert('Insufficient budget for Food!');
+                        }
+                        break;
+                    case 'Gas':
+                        if (gasBudget - amount >= 0) {
+                            gasBudget -= amount;
+                            localStorage.setItem('gasBudget', gasBudget);
+                        } else {
+                            alert('Insufficient budget for Gas!');
+                        }
+                        break;
+                    case 'Misc':
+                        if (miscBudget - amount >= 0) {
+                            miscBudget -= amount;
+                            localStorage.setItem('miscBudget', miscBudget);
+                        } else {
+                            alert('Insufficient budget for Miscellaneous!');
+                        }
+                        break;
+                }
+                updateUI();
+                amountInput.value = '';
+            } else {
                 alert('Please enter a valid amount');
-                return;
             }
+        }
 
-            switch (category) {
-                case 'Food':
-                    if (foodBudget >= amount) {
-                        foodBudget -= amount;
-                        localStorage.setItem('foodBudget', foodBudget);
-                        addTransaction(amount, 'Food');
-                    } else {
-                        alert('Insufficient budget for Food!');
-                    }
-                    break;
-                case 'Gas':
-                    if (gasBudget >= amount) {
-                        gasBudget -= amount;
-                        localStorage.setItem('gasBudget', gasBudget);
-                        addTransaction(amount, 'Gas');
-                    } else {
-                        alert('Insufficient budget for Gas!');
-                    }
-                    break;
-                case 'Misc':
-                    if (miscBudget >= amount) {
-                        miscBudget -= amount;
-                        localStorage.setItem('miscBudget', miscBudget);
-                        addTransaction(amount, 'Misc');
-                    } else {
-                        alert('Insufficient budget for Miscellaneous!');
-                    }
-                    break;
-            }
-
+        // Update the UI with current budget values and progress bars
+        function updateUI() {
             document.getElementById('foodBudget').textContent = foodBudget.toFixed(2);
             document.getElementById('gasBudget').textContent = gasBudget.toFixed(2);
             document.getElementById('miscBudget').textContent = miscBudget.toFixed(2);
 
-            amountInput.value = '';
+            // Update progress bars
             updateProgressBars();
         }
 
-        // Function to add a transaction
-        function addTransaction(amount, category) {
-            const date = new Date().toISOString().slice(0, 10);
-            transactions.push({ amount, category, date });
-            localStorage.setItem('transactions', JSON.stringify(transactions));
-            displayTransactions();
+        // Update progress bars to show remaining budget percentage
+        function updateProgressBars() {
+            const foodProgress = document.getElementById('foodProgress');
+            const gasProgress = document.getElementById('gasProgress');
+            const miscProgress = document.getElementById('miscProgress');
+
+            foodProgress.style.width = ((foodBudget / (foodBudget + gasBudget + miscBudget)) * 100) + '%';
+            gasProgress.style.width = ((gasBudget / (foodBudget + gasBudget + miscBudget)) * 100) + '%';
+            miscProgress.style.width = ((miscBudget / (foodBudget + gasBudget + miscBudget)) * 100) + '%';
         }
 
-        // Function to display transaction history
-        function displayTransactions() {
-            const transactionContainer = document.getElementById('transactionHistory');
-            transactionContainer.innerHTML = ''; // Clear the existing list
-
-            transactions.forEach(transaction => {
-                const div = document.createElement('div');
-                div.textContent = `${transaction.date}: ${transaction.category} - $${transaction.amount}`;
-                transactionContainer.appendChild(div);
-            });
-        }
-
-        // Function to reset budgets
+        // Reset all budgets and clear localStorage
         function resetBudgets() {
-            if (confirm('Are you sure you want to reset the budgets?')) {
-                localStorage.removeItem('foodBudget');
-                localStorage.removeItem('gasBudget');
-                localStorage.removeItem('miscBudget');
-                foodBudget = 0;
-                gasBudget = 0;
-                miscBudget = 0;
-                setBudgets();
-            }
+            localStorage.removeItem('foodBudget');
+            localStorage.removeItem('gasBudget');
+            localStorage.removeItem('miscBudget');
+
+            foodBudget = 0.0;
+            gasBudget = 0.0;
+            miscBudget = 0.0;
+
+            updateUI();
         }
 
-        // Call loadBudgets when the page loads
-        window.onload = loadBudgets;
+        // Load the budgets when the page loads
+        window.onload = function() {
+            loadBudgets();
+        };
     </script>
 </body>
 </html>
