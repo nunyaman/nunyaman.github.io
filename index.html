@@ -101,6 +101,18 @@
             height: 20px;
             border-radius: 10px;
         }
+
+        select {
+            padding-left: 30px; /* Added space to fit icons */
+            background-image: url('https://img.icons8.com/ios-filled/50/000000/arrow.png');
+            background-repeat: no-repeat;
+            background-position: 10px center;
+        }
+
+        option {
+            padding-left: 40px; /* Added padding for the icon */
+        }
+
     </style>
 </head>
 <body>
@@ -119,9 +131,18 @@
         <h3>Add Spend:</h3>
         <input type="number" id="amountInput" placeholder="Enter Amount">
         <select id="categorySelect">
-            <option value="Food">Food <img src="https://img.icons8.com/ios-filled/50/000000/meal.png" class="icon" /></option>
-            <option value="Gas">Gas <img src="https://img.icons8.com/ios-filled/50/000000/gas-pump.png" class="icon" /></option>
-            <option value="Misc">Miscellaneous <img src="https://img.icons8.com/ios-filled/50/000000/others.png" class="icon" /></option>
+            <option value="Food">
+                <img src="https://img.icons8.com/ios-filled/50/000000/meal.png" class="icon" />
+                Food
+            </option>
+            <option value="Gas">
+                <img src="https://img.icons8.com/ios-filled/50/000000/gas-pump.png" class="icon" />
+                Gas
+            </option>
+            <option value="Misc">
+                <img src="https://img.icons8.com/ios-filled/50/000000/others.png" class="icon" />
+                Miscellaneous
+            </option>
         </select>
         <button onclick="addSpend()">Add Spend</button>
 
