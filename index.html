@@ -137,8 +137,8 @@
         <h3>Add Spend:</h3>
         <input type="number" id="amountInput" placeholder="Enter Amount">
         <div class="category-select">
-            <img src="https://img.icons8.com/ios/50/000000/meal.png" alt="Food Icon">
-            <select id="categorySelect">
+            <img id="categoryIcon" src="https://img.icons8.com/ios/50/000000/meal.png" alt="Food Icon">
+            <select id="categorySelect" onchange="updateCategoryIcon()">
                 <option value="Food">Food</option>
                 <option value="Gas">Gas</option>
                 <option value="Misc">Miscellaneous</option>
@@ -263,6 +263,23 @@
             document.getElementById('miscBudget').textContent = '0.00';
 
             updateProgressBars();
+        }
+
+        function updateCategoryIcon() {
+            const category = document.getElementById('categorySelect').value;
+            const icon = document.getElementById('categoryIcon');
+
+            switch (category) {
+                case 'Food':
+                    icon.src = 'https://img.icons8.com/ios/50/000000/meal.png';
+                    break;
+                case 'Gas':
+                    icon.src = 'https://img.icons8.com/ios/50/000000/gas-station.png';
+                    break;
+                case 'Misc':
+                    icon.src = 'https://img.icons8.com/ios/50/000000/star.png'; // Fun/random icon
+                    break;
+            }
         }
 
         window.onload = function() {
