@@ -163,8 +163,13 @@
             const params = new URLSearchParams(window.location.search);
             const category = params.get('category');
             const amount = parseFloat(params.get('amount'));
+            const checkBudgets = params.get('checkBudgets');
 
-            if (category && !isNaN(amount)) {
+            if (checkBudgets === 'true') {
+                // If checkBudgets is true, return the budget values
+                alert(`Food: $${foodBudget.toFixed(2)}, Gas: $${gasBudget.toFixed(2)}, Misc: $${miscBudget.toFixed(2)}`);
+            } else if (category && !isNaN(amount)) {
+                // Adjust budgets if a category and amount are provided
                 switch (category) {
                     case 'Food':
                         if (foodBudget - amount >= 0) {
