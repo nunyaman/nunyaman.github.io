@@ -8,27 +8,58 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f5f5f5;
+            margin: 0;
         }
 
         .container {
             background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 400px;
+            max-width: 500px;
             text-align: center;
         }
 
         h1 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .budget-section {
+            margin-bottom: 25px;
+        }
+
+        .budget-card {
+            background-color: #f0f8ff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .budget-card h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .budget-card span {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .input-group {
             margin-bottom: 20px;
         }
 
@@ -36,8 +67,9 @@
             width: 100%;
             padding: 10px;
             margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
         }
 
         button {
@@ -45,24 +77,11 @@
             color: white;
             border: none;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
             background-color: #0056b3;
-        }
-
-        .summary {
-            margin-top: 20px;
-        }
-
-        .summary div {
-            margin: 5px 0;
-        }
-
-        .category-icon {
-            width: 20px;
-            height: 20px;
-            margin-right: 8px;
         }
 
         .dark-mode {
@@ -70,7 +89,7 @@
             color: #fff;
         }
 
-        .dark-mode button {
+        .dark-mode .container {
             background-color: #444;
             color: #fff;
         }
@@ -80,10 +99,13 @@
             color: #fff;
         }
 
+        .dark-mode button {
+            background-color: #555;
+        }
+
         @media (max-width: 600px) {
             .container {
                 width: 90%;
-                max-width: 350px;
             }
         }
     </style>
@@ -92,29 +114,47 @@
     <div class="container">
         <h1>Spend Manager</h1>
 
-        <h3>Set Budgets:</h3>
-        <input type="number" id="foodBudgetInput" placeholder="Set Food Budget">
-        <input type="number" id="gasBudgetInput" placeholder="Set Gas Budget">
-        <input type="number" id="miscBudgetInput" placeholder="Set Miscellaneous Budget">
-        <button onclick="setBudgets()">Set Budgets</button>
-
-        <h3>Add Spend:</h3>
-        <input type="number" id="amountInput" placeholder="Enter Amount">
-        <select id="categorySelect">
-            <option value="Food">Food</option>
-            <option value="Gas">Gas</option>
-            <option value="Misc">Miscellaneous</option>
-        </select>
-        <button onclick="addSpend()">Add Spend</button>
-
-        <div class="summary">
-            <h3>Remaining Budget:</h3>
-            <div><img class="category-icon" src="https://img.icons8.com/ios/50/000000/meal.png" alt="Food Icon">Food: $<span id="foodBudget">0.00</span></div>
-            <div><img class="category-icon" src="https://img.icons8.com/ios/50/000000/gas-station.png" alt="Gas Icon">Gas: $<span id="gasBudget">0.00</span></div>
-            <div><img class="category-icon" src="https://img.icons8.com/ios/50/000000/box.png" alt="Misc Icon">Miscellaneous: $<span id="miscBudget">0.00</span></div>
+        <!-- Remaining Budget Section -->
+        <div class="budget-section">
+            <div class="budget-card">
+                <h2>Food</h2>
+                <span id="foodBudget">$0.00</span>
+            </div>
+            <div class="budget-card">
+                <h2>Gas</h2>
+                <span id="gasBudget">$0.00</span>
+            </div>
+            <div class="budget-card">
+                <h2>Miscellaneous</h2>
+                <span id="miscBudget">$0.00</span>
+            </div>
         </div>
 
+        <!-- Set Budget Section -->
+        <div class="input-group">
+            <h3>Set Budgets</h3>
+            <input type="number" id="foodBudgetInput" placeholder="Set Food Budget">
+            <input type="number" id="gasBudgetInput" placeholder="Set Gas Budget">
+            <input type="number" id="miscBudgetInput" placeholder="Set Miscellaneous Budget">
+            <button onclick="setBudgets()">Set Budgets</button>
+        </div>
+
+        <!-- Add Spend Section -->
+        <div class="input-group">
+            <h3>Add Spend</h3>
+            <input type="number" id="amountInput" placeholder="Enter Amount">
+            <select id="categorySelect">
+                <option value="Food">Food</option>
+                <option value="Gas">Gas</option>
+                <option value="Misc">Miscellaneous</option>
+            </select>
+            <button onclick="addSpend()">Add Spend</button>
+        </div>
+
+        <!-- Reset Budget Button -->
         <button onclick="resetBudget()">Reset Budget</button>
+
+        <!-- Toggle Dark Mode Button -->
         <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
     </div>
 
@@ -194,9 +234,9 @@
         }
 
         function updateUI() {
-            document.getElementById('foodBudget').textContent = foodBudget.toFixed(2);
-            document.getElementById('gasBudget').textContent = gasBudget.toFixed(2);
-            document.getElementById('miscBudget').textContent = miscBudget.toFixed(2);
+            document.getElementById('foodBudget').textContent = `$${foodBudget.toFixed(2)}`;
+            document.getElementById('gasBudget').textContent = `$${gasBudget.toFixed(2)}`;
+            document.getElementById('miscBudget').textContent = `$${miscBudget.toFixed(2)}`;
         }
 
         function resetBudget() {
