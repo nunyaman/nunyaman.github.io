@@ -1,21 +1,21 @@
 {
-  "name": "Spend Manager",
-  "short_name": "Spend Manager",
-  "description": "Manage your spending and set budgets",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#4CAF50",
-  "icons": [
-    {
-      "src": "icons/icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+    "name": "Spend Manager",
+    "short_name": "Spend",
+    "description": "Track your spending and budget easily.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#f4f6f8",
+    "theme_color": "#3498db",
+    "icons": [
+        {
+            "src": "https://img.icons8.com/fluency/192/000000/money-bag.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "https://img.icons8.com/fluency/512/000000/money-bag.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
 }
