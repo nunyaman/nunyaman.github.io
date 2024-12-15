@@ -110,3 +110,125 @@
         .dark-mode button {
             background: #2980b9;
         }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Spend Manager</h1>
+
+        <!-- Remaining Budget Cards -->
+        <div class="budget-card">
+            <h2>Food</h2>
+            <span id="foodBudget">$0.00</span>
+        </div>
+        <div class="budget-card">
+            <h2>Gas</h2>
+            <span id="gasBudget">$0.00</span>
+        </div>
+        <div class="budget-card">
+            <h2>Miscellaneous</h2>
+            <span id="miscBudget">$0.00</span>
+        </div>
+
+        <!-- Set Budgets Section -->
+        <div class="input-group">
+            <h3>Set Budgets</h3>
+            <input type="number" id="foodBudgetInput" placeholder="Set Food Budget">
+            <input type="number" id="gasBudgetInput" placeholder="Set Gas Budget">
+            <input type="number" id="miscBudgetInput" placeholder="Set Misc Budget">
+            <button onclick="setBudgets()">Set Budgets</button>
+        </div>
+
+        <!-- Add Spend Section -->
+        <div class="input-group">
+            <h3>Add Spend</h3>
+            <input type="number" id="amountInput" placeholder="Enter Amount">
+            <select id="categorySelect">
+                <option value="Food">Food</option>
+                <option value="Gas">Gas</option>
+                <option value="Misc">Miscellaneous</option>
+            </select>
+            <button onclick="addSpend()">Add Spend</button>
+        </div>
+
+        <!-- Utility Buttons -->
+        <button onclick="resetBudget()">Reset Budget</button>
+        <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+    </div>
+
+    <script>
+        let foodBudget = 0.0;
+        let gasBudget = 0.0;
+        let miscBudget = 0.0;
+
+        // Initialize budgets from localStorage
+        window.onload = function () {
+            foodBudget = parseFloat(localStorage.getItem("foodBudget")) || 0.0;
+            gasBudget = parseFloat(localStorage.getItem("gasBudget")) || 0.0;
+            miscBudget = parseFloat(localStorage.getItem("miscBudget")) || 0.0;
+            updateUI();
+        };
+
+        function setBudgets() {
+            const foodInput = document.getElementById('foodBudgetInput');
+            const gasInput = document.getElementById('gasBudgetInput');
+            const miscInput = document.getElementById('miscBudgetInput');
+
+            foodBudget = parseFloat(foodInput.value) || 0;
+            gasBudget = parseFloat(gasInput.value) || 0;
+            miscBudget = parseFloat(miscInput.value) || 0;
+
+            localStorage.setItem("foodBudget", foodBudget);
+            localStorage.setItem("gasBudget", gasBudget);
+            localStorage.setItem("miscBudget", miscBudget);
+
+            updateUI();
+
+            foodInput.value = '';
+            gasInput.value = '';
+            miscInput.value = '';
+        }
+
+        function addSpend() {
+            const amountInput = document.getElementById('amountInput');
+            const categorySelect = document.getElementById('categorySelect');
+            const amount = parseFloat(amountInput.value);
+            const category = categorySelect.value;
+
+            if (!isNaN(amount) && amount > 0) {
+                if (category === "Food") foodBudget -= amount;
+                else if (category === "Gas") gasBudget -= amount;
+                else miscBudget -= amount;
+
+                localStorage.setItem("foodBudget", foodBudget);
+                localStorage.setItem("gasBudget", gasBudget);
+                localStorage.setItem("miscBudget", miscBudget);
+
+                updateUI();
+                amountInput.value = '';
+            } else {
+                alert('Please enter a valid amount.');
+            }
+        }
+
+        function resetBudget() {
+            foodBudget = 0.0;
+            gasBudget = 0.0;
+            miscBudget = 0.0;
+
+            localStorage.clear();
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById("foodBudget").innerText = `$${foodBudget.toFixed(2)}`;
+            document.getElementById("gasBudget").innerText = `$${gasBudget.toFixed(2)}`;
+            document.getElementById("miscBudget").innerText = `$${miscBudget.toFixed(2)}`;
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+        }
+    </script>
+</body>
+</html>
