@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spend Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,13 +15,6 @@
             align-items: center;
             height: 100vh;
             background-color: #f5f5f5;
-            transition: background-color 0.3s ease;
-        }
-
-        /* Dark mode styles */
-        body.dark-mode {
-            background-color: #121212;
-            color: #fff;
         }
 
         .container {
@@ -30,15 +24,11 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 400px;
-            text-align: center;
             transition: background-color 0.3s ease;
         }
 
-        .container.dark-mode {
-            background: #333;
-        }
-
         h1 {
+            text-align: center;
             margin-bottom: 20px;
         }
 
@@ -48,6 +38,7 @@
             margin: 10px 0;
             border: 1px solid #ccc;
             border-radius: 5px;
+            font-size: 1rem;
         }
 
         button {
@@ -70,57 +61,82 @@
             margin: 5px 0;
         }
 
-        /* Dark mode button styles */
-        .dark-mode-toggle {
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #333;
+        }
+
+        .container.dark-mode {
             background-color: #444;
             color: white;
-            border: none;
-            padding: 10px 20px;
-            margin: 10px 0;
-            cursor: pointer;
-            border-radius: 5px;
         }
 
-        .dark-mode-toggle:hover {
-            background-color: #555;
-        }
-
-        .icon {
-            width: 20px;
-            height: 20px;
-            vertical-align: middle;
-            margin-right: 5px;
-        }
-
-        .progress-bar-container {
-            margin: 10px 0;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 20px;
-            border-radius: 10px;
+        button.dark-mode {
+            background-color: #0056b3;
         }
 
         select {
-            padding-left: 30px; /* Added space to fit icons */
-            background-image: url('https://img.icons8.com/ios-filled/50/000000/arrow.png');
-            background-repeat: no-repeat;
-            background-position: 10px center;
+            background-color: #f8f8f8;
         }
 
-        option {
-            padding-left: 40px; /* Added padding for the icon */
+        /* Category icons */
+        .category-icons {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .category-icons i {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        /* Toggle switch */
+        .toggle-container {
+            text-align: center;
+        }
+
+        .toggle-container input {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            appearance: none;
+            background: #ccc;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-container input:checked {
+            background: #4b8b3b;
+        }
+
+        .toggle-container input:before {
+            content: "";
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background-color: white;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-container input:checked:before {
+            transform: translateX(30px);
         }
 
     </style>
 </head>
-<body>
 
+<body>
     <div class="container">
         <h1>Spend Manager</h1>
 
-        <button class="dark-mode-toggle" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+        <div class="toggle-container">
+            <label for="toggleDarkMode">Toggle Dark Mode</label>
+            <input type="checkbox" id="toggleDarkMode" onclick="toggleDarkMode()">
+        </div>
 
         <h3>Set Budgets:</h3>
         <input type="number" id="foodBudgetInput" placeholder="Set Food Budget">
@@ -131,18 +147,9 @@
         <h3>Add Spend:</h3>
         <input type="number" id="amountInput" placeholder="Enter Amount">
         <select id="categorySelect">
-            <option value="Food">
-                <img src="https://img.icons8.com/ios-filled/50/000000/meal.png" class="icon" />
-                Food
-            </option>
-            <option value="Gas">
-                <img src="https://img.icons8.com/ios-filled/50/000000/gas-pump.png" class="icon" />
-                Gas
-            </option>
-            <option value="Misc">
-                <img src="https://img.icons8.com/ios-filled/50/000000/others.png" class="icon" />
-                Miscellaneous
-            </option>
+            <option value="Food"><i class="fas fa-utensils"></i> Food</option>
+            <option value="Gas"><i class="fas fa-gas-pump"></i> Gas</option>
+            <option value="Misc"><i class="fas fa-cogs"></i> Miscellaneous</option>
         </select>
         <button onclick="addSpend()">Add Spend</button>
 
@@ -157,18 +164,20 @@
     </div>
 
     <script>
-        // Load budgets from localStorage if available
-        let foodBudget = parseFloat(localStorage.getItem('foodBudget')) || 0;
-        let gasBudget = parseFloat(localStorage.getItem('gasBudget')) || 0;
-        let miscBudget = parseFloat(localStorage.getItem('miscBudget')) || 0;
+        let foodBudget = 0.0;
+        let gasBudget = 0.0;
+        let miscBudget = 0.0;
 
         // Function to toggle dark mode
         function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            document.querySelector('.container').classList.toggle('dark-mode');
+            document.body.classList.toggle("dark-mode");
+            document.querySelector(".container").classList.toggle("dark-mode");
+            document.querySelectorAll("button").forEach(button => {
+                button.classList.toggle("dark-mode");
+            });
         }
 
-        // Set budgets and update UI
+        // Set budgets
         function setBudgets() {
             const foodInput = document.getElementById('foodBudgetInput');
             const gasInput = document.getElementById('gasBudgetInput');
@@ -178,20 +187,22 @@
             gasBudget = parseFloat(gasInput.value) || 0;
             miscBudget = parseFloat(miscInput.value) || 0;
 
-            localStorage.setItem('foodBudget', foodBudget);
-            localStorage.setItem('gasBudget', gasBudget);
-            localStorage.setItem('miscBudget', miscBudget);
-
             document.getElementById('foodBudget').textContent = foodBudget.toFixed(2);
             document.getElementById('gasBudget').textContent = gasBudget.toFixed(2);
             document.getElementById('miscBudget').textContent = miscBudget.toFixed(2);
 
+            // Store in localStorage
+            localStorage.setItem('foodBudget', foodBudget);
+            localStorage.setItem('gasBudget', gasBudget);
+            localStorage.setItem('miscBudget', miscBudget);
+
+            // Clear inputs
             foodInput.value = '';
             gasInput.value = '';
             miscInput.value = '';
         }
 
-        // Add spending and update UI
+        // Add spend to selected category
         function addSpend() {
             const amountInput = document.getElementById('amountInput');
             const categorySelect = document.getElementById('categorySelect');
@@ -203,7 +214,6 @@
                     case 'Food':
                         if (foodBudget - amount >= 0) {
                             foodBudget -= amount;
-                            localStorage.setItem('foodBudget', foodBudget);
                             document.getElementById('foodBudget').textContent = foodBudget.toFixed(2);
                         } else {
                             alert('Insufficient budget for Food!');
@@ -212,7 +222,6 @@
                     case 'Gas':
                         if (gasBudget - amount >= 0) {
                             gasBudget -= amount;
-                            localStorage.setItem('gasBudget', gasBudget);
                             document.getElementById('gasBudget').textContent = gasBudget.toFixed(2);
                         } else {
                             alert('Insufficient budget for Gas!');
@@ -221,20 +230,24 @@
                     case 'Misc':
                         if (miscBudget - amount >= 0) {
                             miscBudget -= amount;
-                            localStorage.setItem('miscBudget', miscBudget);
                             document.getElementById('miscBudget').textContent = miscBudget.toFixed(2);
                         } else {
                             alert('Insufficient budget for Miscellaneous!');
                         }
                         break;
                 }
+                // Save updated amounts to localStorage
+                localStorage.setItem('foodBudget', foodBudget);
+                localStorage.setItem('gasBudget', gasBudget);
+                localStorage.setItem('miscBudget', miscBudget);
+
                 amountInput.value = '';
             } else {
                 alert('Please enter a valid amount');
             }
         }
 
-        // Reset budgets and clear localStorage
+        // Reset budgets
         function resetBudgets() {
             localStorage.removeItem('foodBudget');
             localStorage.removeItem('gasBudget');
@@ -249,10 +262,20 @@
             document.getElementById('miscBudget').textContent = '0.00';
         }
 
-        // Set initial values
-        document.getElementById('foodBudget').textContent = foodBudget.toFixed(2);
-        document.getElementById('gasBudget').textContent = gasBudget.toFixed(2);
-        document.getElementById('miscBudget').textContent = miscBudget.toFixed(2);
+        // On page load, retrieve stored budgets
+        window.onload = function() {
+            const storedFoodBudget = localStorage.getItem('foodBudget');
+            const storedGasBudget = localStorage.getItem('gasBudget');
+            const storedMiscBudget = localStorage.getItem('miscBudget');
+
+            if (storedFoodBudget) foodBudget = parseFloat(storedFoodBudget);
+            if (storedGasBudget) gasBudget = parseFloat(storedGasBudget);
+            if (storedMiscBudget) miscBudget = parseFloat(storedMiscBudget);
+
+            document.getElementById('foodBudget').textContent = foodBudget.toFixed(2);
+            document.getElementById('gasBudget').textContent = gasBudget.toFixed(2);
+            document.getElementById('miscBudget').textContent = miscBudget.toFixed(2);
+        };
     </script>
 </body>
 </html>
