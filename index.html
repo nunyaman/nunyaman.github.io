@@ -17,6 +17,12 @@
             transition: background-color 0.3s ease;
         }
 
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #121212;
+            color: #fff;
+        }
+
         .container {
             background: #fff;
             padding: 20px;
@@ -25,6 +31,11 @@
             width: 100%;
             max-width: 400px;
             text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .container.dark-mode {
+            background: #333;
         }
 
         h1 {
@@ -59,6 +70,28 @@
             margin: 5px 0;
         }
 
+        /* Dark mode button styles */
+        .dark-mode-toggle {
+            background-color: #444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .dark-mode-toggle:hover {
+            background-color: #555;
+        }
+
+        .icon {
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
         .progress-bar-container {
             margin: 10px 0;
         }
@@ -67,59 +100,6 @@
             width: 100%;
             height: 20px;
             border-radius: 10px;
-            background-color: #e0e0e0;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            border-radius: 10px;
-            background-color: #76c7c0;
-            transition: width 0.3s ease;
-        }
-
-        .dark-mode {
-            background-color: #333;
-            color: white;
-        }
-
-        .dark-mode button {
-            background-color: #1a73e8;
-        }
-
-        .dark-mode .progress-bar-fill {
-            background-color: #4caf50;
-        }
-
-        .icon {
-            margin-right: 10px;
-        }
-
-        .category-select {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .category-select img {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-        }
-
-        .reset-button {
-            background-color: #e74c3c;
-            color: white;
-        }
-
-        /* For mobile responsiveness */
-        @media (max-width: 600px) {
-            .container {
-                width: 90%;
-            }
-
-            input, select, button {
-                font-size: 14px;
-            }
         }
     </style>
 </head>
@@ -127,6 +107,8 @@
 
     <div class="container">
         <h1>Spend Manager</h1>
+
+        <button class="dark-mode-toggle" onclick="toggleDarkMode()">Toggle Dark Mode</button>
 
         <h3>Set Budgets:</h3>
         <input type="number" id="foodBudgetInput" placeholder="Set Food Budget">
@@ -136,14 +118,11 @@
 
         <h3>Add Spend:</h3>
         <input type="number" id="amountInput" placeholder="Enter Amount">
-        <div class="category-select">
-            <img id="categoryIcon" src="https://img.icons8.com/ios/50/000000/meal.png" alt="Food Icon">
-            <select id="categorySelect" onchange="updateCategoryIcon()">
-                <option value="Food">Food</option>
-                <option value="Gas">Gas</option>
-                <option value="Misc">Miscellaneous</option>
-            </select>
-        </div>
+        <select id="categorySelect">
+            <option value="Food">Food <img src="https://img.icons8.com/ios-filled/50/000000/meal.png" class="icon" /></option>
+            <option value="Gas">Gas <img src="https://img.icons8.com/ios-filled/50/000000/gas-pump.png" class="icon" /></option>
+            <option value="Misc">Miscellaneous <img src="https://img.icons8.com/ios-filled/50/000000/others.png" class="icon" /></option>
+        </select>
         <button onclick="addSpend()">Add Spend</button>
 
         <div class="summary">
@@ -153,26 +132,22 @@
             <div>Miscellaneous: $<span id="miscBudget">0.00</span></div>
         </div>
 
-        <div class="progress-bar-container">
-            <h4>Budget Progress:</h4>
-            <div>Food</div>
-            <div class="progress-bar"><div id="foodProgress" class="progress-bar-fill" style="width: 0%"></div></div>
-
-            <div>Gas</div>
-            <div class="progress-bar"><div id="gasProgress" class="progress-bar-fill" style="width: 0%"></div></div>
-
-            <div>Miscellaneous</div>
-            <div class="progress-bar"><div id="miscProgress" class="progress-bar-fill" style="width: 0%"></div></div>
-        </div>
-
-        <button class="reset-button" onclick="resetBudgets()">Reset Budget</button>
+        <button onclick="resetBudgets()">Reset Budget</button>
     </div>
 
     <script>
-        let foodBudget = 0.0;
-        let gasBudget = 0.0;
-        let miscBudget = 0.0;
+        // Load budgets from localStorage if available
+        let foodBudget = parseFloat(localStorage.getItem('foodBudget')) || 0;
+        let gasBudget = parseFloat(localStorage.getItem('gasBudget')) || 0;
+        let miscBudget = parseFloat(localStorage.getItem('miscBudget')) || 0;
 
+        // Function to toggle dark mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            document.querySelector('.container').classList.toggle('dark-mode');
+        }
+
+        // Set budgets and update UI
         function setBudgets() {
             const foodInput = document.getElementById('foodBudgetInput');
             const gasInput = document.getElementById('gasBudgetInput');
@@ -182,21 +157,20 @@
             gasBudget = parseFloat(gasInput.value) || 0;
             miscBudget = parseFloat(miscInput.value) || 0;
 
-            document.getElementById('foodBudget').textContent = foodBudget.toFixed(2);
-            document.getElementById('gasBudget').textContent = gasBudget.toFixed(2);
-            document.getElementById('miscBudget').textContent = miscBudget.toFixed(2);
-
-            updateProgressBars();
-
             localStorage.setItem('foodBudget', foodBudget);
             localStorage.setItem('gasBudget', gasBudget);
             localStorage.setItem('miscBudget', miscBudget);
+
+            document.getElementById('foodBudget').textContent = foodBudget.toFixed(2);
+            document.getElementById('gasBudget').textContent = gasBudget.toFixed(2);
+            document.getElementById('miscBudget').textContent = miscBudget.toFixed(2);
 
             foodInput.value = '';
             gasInput.value = '';
             miscInput.value = '';
         }
 
+        // Add spending and update UI
         function addSpend() {
             const amountInput = document.getElementById('amountInput');
             const categorySelect = document.getElementById('categorySelect');
@@ -208,6 +182,7 @@
                     case 'Food':
                         if (foodBudget - amount >= 0) {
                             foodBudget -= amount;
+                            localStorage.setItem('foodBudget', foodBudget);
                             document.getElementById('foodBudget').textContent = foodBudget.toFixed(2);
                         } else {
                             alert('Insufficient budget for Food!');
@@ -216,6 +191,7 @@
                     case 'Gas':
                         if (gasBudget - amount >= 0) {
                             gasBudget -= amount;
+                            localStorage.setItem('gasBudget', gasBudget);
                             document.getElementById('gasBudget').textContent = gasBudget.toFixed(2);
                         } else {
                             alert('Insufficient budget for Gas!');
@@ -224,80 +200,38 @@
                     case 'Misc':
                         if (miscBudget - amount >= 0) {
                             miscBudget -= amount;
+                            localStorage.setItem('miscBudget', miscBudget);
                             document.getElementById('miscBudget').textContent = miscBudget.toFixed(2);
                         } else {
                             alert('Insufficient budget for Miscellaneous!');
                         }
                         break;
                 }
-                updateProgressBars();
-                localStorage.setItem('foodBudget', foodBudget);
-                localStorage.setItem('gasBudget', gasBudget);
-                localStorage.setItem('miscBudget', miscBudget);
                 amountInput.value = '';
             } else {
                 alert('Please enter a valid amount');
             }
         }
 
-        function updateProgressBars() {
-            const foodProgress = (foodBudget / parseFloat(localStorage.getItem('foodBudget') || 1)) * 100;
-            const gasProgress = (gasBudget / parseFloat(localStorage.getItem('gasBudget') || 1)) * 100;
-            const miscProgress = (miscBudget / parseFloat(localStorage.getItem('miscBudget') || 1)) * 100;
-
-            document.getElementById('foodProgress').style.width = `${foodProgress}%`;
-            document.getElementById('gasProgress').style.width = `${gasProgress}%`;
-            document.getElementById('miscProgress').style.width = `${miscProgress}%`;
-        }
-
+        // Reset budgets and clear localStorage
         function resetBudgets() {
             localStorage.removeItem('foodBudget');
             localStorage.removeItem('gasBudget');
             localStorage.removeItem('miscBudget');
-            foodBudget = 0.0;
-            gasBudget = 0.0;
-            miscBudget = 0.0;
+
+            foodBudget = 0;
+            gasBudget = 0;
+            miscBudget = 0;
 
             document.getElementById('foodBudget').textContent = '0.00';
             document.getElementById('gasBudget').textContent = '0.00';
             document.getElementById('miscBudget').textContent = '0.00';
-
-            updateProgressBars();
         }
 
-        function updateCategoryIcon() {
-            const category = document.getElementById('categorySelect').value;
-            const icon = document.getElementById('categoryIcon');
-
-            switch (category) {
-                case 'Food':
-                    icon.src = 'https://img.icons8.com/ios/50/000000/meal.png';
-                    break;
-                case 'Gas':
-                    icon.src = 'https://img.icons8.com/ios/50/000000/gas-station.png';
-                    break;
-                case 'Misc':
-                    icon.src = 'https://img.icons8.com/ios/50/000000/star.png'; // Fun/random icon
-                    break;
-            }
-        }
-
-        window.onload = function() {
-            const savedFoodBudget = localStorage.getItem('foodBudget');
-            const savedGasBudget = localStorage.getItem('gasBudget');
-            const savedMiscBudget = localStorage.getItem('miscBudget');
-
-            if (savedFoodBudget) foodBudget = parseFloat(savedFoodBudget);
-            if (savedGasBudget) gasBudget = parseFloat(savedGasBudget);
-            if (savedMiscBudget) miscBudget = parseFloat(savedMiscBudget);
-
-            document.getElementById('foodBudget').textContent = foodBudget.toFixed(2);
-            document.getElementById('gasBudget').textContent = gasBudget.toFixed(2);
-            document.getElementById('miscBudget').textContent = miscBudget.toFixed(2);
-
-            updateProgressBars();
-        };
+        // Set initial values
+        document.getElementById('foodBudget').textContent = foodBudget.toFixed(2);
+        document.getElementById('gasBudget').textContent = gasBudget.toFixed(2);
+        document.getElementById('miscBudget').textContent = miscBudget.toFixed(2);
     </script>
-
 </body>
 </html>
