@@ -4,17 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spend Manager</title>
-    
-    <!-- Web App Manifest Link -->
-    <link rel="manifest" href="manifest.json">
-    
-    <!-- Icons for Home Screen -->
-    <link rel="icon" href="icons/icon-192x192.png" sizes="192x192">
-    <link rel="icon" href="icons/icon-512x512.png" sizes="512x512">
-    
-    <!-- Meta Tags for Mobile App Install -->
-    <meta name="theme-color" content="#4CAF50"> <!-- Sets the color of the browser’s toolbar -->
-    
+
+    <!-- Link to the Web App Manifest -->
+    <link rel="manifest" href="/manifest.json">
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,50 +16,55 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            background-color: #f4f4f9;
-            color: #333;
+            height: 100vh;
+            background-color: #f5f5f5;
         }
         .container {
-            max-width: 500px;
-            width: 100%;
-            text-align: center;
+            background: #fff;
             padding: 20px;
             border-radius: 10px;
-            background-color: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
         button {
-            padding: 10px 20px;
-            margin: 10px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            background-color: #4CAF50;
+            background-color: #007BFF;
             color: white;
+            border: none;
             cursor: pointer;
         }
         button:hover {
-            background-color: #45a049;
+            background-color: #0056b3;
         }
-        input[type="number"], select {
-            padding: 10px;
-            margin: 5px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            width: 80%;
-            max-width: 400px;
+        .summary {
+            margin-top: 20px;
         }
         .summary div {
-            margin-top: 10px;
-            font-size: 18px;
+            margin: 5px 0;
+            display: flex;
+            align-items: center;
         }
-        h3 {
-            color: #333;
-        }
-        .icon {
+        .summary img {
+            width: 20px;
             margin-right: 10px;
+        }
+        .reset-btn {
+            background-color: #DC3545;
+            margin-top: 10px;
+        }
+        .reset-btn:hover {
+            background-color: #C82333;
         }
     </style>
 </head>
@@ -83,41 +81,40 @@
         <h3>Add Spend:</h3>
         <input type="number" id="amountInput" placeholder="Enter Amount">
         <select id="categorySelect">
-            <option value="Food">🍔 Food</option>
-            <option value="Gas">⛽ Gas</option>
-            <option value="Misc">🎉 Miscellaneous</option>
+            <option value="Food">Food 🍔</option>
+            <option value="Gas">Gas ⛽</option>
+            <option value="Misc">Miscellaneous 🎉</option>
         </select>
         <button onclick="addSpend()">Add Spend</button>
 
         <div class="summary">
             <h3>Remaining Budget:</h3>
-            <div>Food: $<span id="foodBudget">0.00</span></div>
-            <div>Gas: $<span id="gasBudget">0.00</span></div>
-            <div>Miscellaneous: $<span id="miscBudget">0.00</span></div>
+            <div>
+                <img src="food-icon.png" alt="Food Icon">Food: $<span id="foodBudget">0.00</span>
+            </div>
+            <div>
+                <img src="gas-icon.png" alt="Gas Icon">Gas: $<span id="gasBudget">0.00</span>
+            </div>
+            <div>
+                <img src="misc-icon.png" alt="Miscellaneous Icon">Miscellaneous: $<span id="miscBudget">0.00</span>
+            </div>
         </div>
-        
-        <!-- Reset Button -->
-        <button onclick="resetApp()">Reset Budget</button>
+
+        <button class="reset-btn" onclick="resetBudget()">Reset Budget</button>
     </div>
 
     <script>
-        let foodBudget = 0.0;
-        let gasBudget = 0.0;
-        let miscBudget = 0.0;
+        // Initialize budgets from localStorage or default to 0
+        let foodBudget = parseFloat(localStorage.getItem("foodBudget")) || 0.0;
+        let gasBudget = parseFloat(localStorage.getItem("gasBudget")) || 0.0;
+        let miscBudget = parseFloat(localStorage.getItem("miscBudget")) || 0.0;
 
-        // Load saved budgets from localStorage if they exist
-        window.onload = function() {
-            foodBudget = parseFloat(localStorage.getItem('foodBudget')) || 0;
-            gasBudget = parseFloat(localStorage.getItem('gasBudget')) || 0;
-            miscBudget = parseFloat(localStorage.getItem('miscBudget')) || 0;
+        // Display initial values
+        document.getElementById('foodBudget').textContent = foodBudget.toFixed(2);
+        document.getElementById('gasBudget').textContent = gasBudget.toFixed(2);
+        document.getElementById('miscBudget').textContent = miscBudget.toFixed(2);
 
-            // Update UI
-            document.getElementById('foodBudget').textContent = foodBudget.toFixed(2);
-            document.getElementById('gasBudget').textContent = gasBudget.toFixed(2);
-            document.getElementById('miscBudget').textContent = miscBudget.toFixed(2);
-        };
-
-        // Set the budgets from the input fields
+        // Function to set budgets
         function setBudgets() {
             const foodInput = document.getElementById('foodBudgetInput');
             const gasInput = document.getElementById('gasBudgetInput');
@@ -127,21 +124,23 @@
             gasBudget = parseFloat(gasInput.value) || 0;
             miscBudget = parseFloat(miscInput.value) || 0;
 
+            // Save budgets in localStorage
+            localStorage.setItem('foodBudget', foodBudget);
+            localStorage.setItem('gasBudget', gasBudget);
+            localStorage.setItem('miscBudget', miscBudget);
+
+            // Update displayed budget values
             document.getElementById('foodBudget').textContent = foodBudget.toFixed(2);
             document.getElementById('gasBudget').textContent = gasBudget.toFixed(2);
             document.getElementById('miscBudget').textContent = miscBudget.toFixed(2);
 
+            // Clear input fields
             foodInput.value = '';
             gasInput.value = '';
             miscInput.value = '';
-
-            // Store budgets in localStorage
-            localStorage.setItem('foodBudget', foodBudget);
-            localStorage.setItem('gasBudget', gasBudget);
-            localStorage.setItem('miscBudget', miscBudget);
         }
 
-        // Add spend to the appropriate category
+        // Function to add spend to budget
         function addSpend() {
             const amountInput = document.getElementById('amountInput');
             const categorySelect = document.getElementById('categorySelect');
@@ -175,31 +174,34 @@
                         }
                         break;
                 }
-                amountInput.value = '';
-                // Update local storage with new values
+                // Save updated budget in localStorage
                 localStorage.setItem('foodBudget', foodBudget);
                 localStorage.setItem('gasBudget', gasBudget);
                 localStorage.setItem('miscBudget', miscBudget);
+
+                // Clear the amount input
+                amountInput.value = '';
             } else {
                 alert('Please enter a valid amount');
             }
         }
 
-        // Reset the budgets and clear all localStorage data
-        function resetApp() {
-            // Clear all localStorage data
-            localStorage.clear();
-            
-            // Reset all budgets on the UI
+        // Function to reset budget
+        function resetBudget() {
+            // Clear budgets in localStorage
+            localStorage.removeItem('foodBudget');
+            localStorage.removeItem('gasBudget');
+            localStorage.removeItem('miscBudget');
+
+            // Reset displayed budget values
             foodBudget = 0;
             gasBudget = 0;
             miscBudget = 0;
-            
             document.getElementById('foodBudget').textContent = foodBudget.toFixed(2);
             document.getElementById('gasBudget').textContent = gasBudget.toFixed(2);
             document.getElementById('miscBudget').textContent = miscBudget.toFixed(2);
 
-            alert("Budget reset and all stored data cleared!");
+            alert('Budgets have been reset');
         }
     </script>
 </body>
