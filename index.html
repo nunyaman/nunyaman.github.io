@@ -5,17 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spend Manager</title>
     <style>
-        /* Base styles */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f5f5f5;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            color: #333;
+            background-color: #f5f5f5;
+            transition: background-color 0.3s ease;
         }
 
         .container {
@@ -30,20 +29,14 @@
 
         h1 {
             margin-bottom: 20px;
-            font-size: 24px;
-        }
-
-        h3 {
-            font-size: 18px;
-            margin: 15px 0 10px;
         }
 
         input, select, button {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
-            border-radius: 5px;
             border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
         button {
@@ -51,49 +44,87 @@
             color: white;
             border: none;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
             background-color: #0056b3;
         }
 
-        /* Progress bar styles */
-        .progress-bar {
-            height: 10px;
-            border-radius: 5px;
+        .summary {
+            margin-top: 20px;
+        }
+
+        .summary div {
+            margin: 5px 0;
+        }
+
+        .progress-bar-container {
             margin: 10px 0;
         }
 
-        .progress-bar div {
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            border-radius: 10px;
+            background-color: #e0e0e0;
+        }
+
+        .progress-bar-fill {
             height: 100%;
-            border-radius: 5px;
+            border-radius: 10px;
+            background-color: #76c7c0;
+            transition: width 0.3s ease;
         }
 
-        /* Mobile responsiveness */
-        @media (max-width: 600px) {
-            .container {
-                max-width: 90%;
-            }
-        }
-
-        /* Dark Mode Styles */
-        body.dark-mode {
+        .dark-mode {
             background-color: #333;
             color: white;
         }
 
-        .container.dark-mode {
-            background-color: #444;
-        }
-
         .dark-mode button {
-            background-color: #333;
-            color: #fff;
+            background-color: #1a73e8;
         }
 
+        .dark-mode .progress-bar-fill {
+            background-color: #4caf50;
+        }
+
+        .icon {
+            margin-right: 10px;
+        }
+
+        .category-select {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .category-select img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .reset-button {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        /* For mobile responsiveness */
+        @media (max-width: 600px) {
+            .container {
+                width: 90%;
+            }
+
+            input, select, button {
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
+
     <div class="container">
         <h1>Spend Manager</h1>
 
@@ -105,25 +136,36 @@
 
         <h3>Add Spend:</h3>
         <input type="number" id="amountInput" placeholder="Enter Amount">
-        <select id="categorySelect">
-            <option value="Food">Food</option>
-            <option value="Gas">Gas</option>
-            <option value="Misc">Miscellaneous</option>
-        </select>
+        <div class="category-select">
+            <img src="https://img.icons8.com/ios/50/000000/meal.png" alt="Food Icon">
+            <select id="categorySelect">
+                <option value="Food">Food</option>
+                <option value="Gas">Gas</option>
+                <option value="Misc">Miscellaneous</option>
+            </select>
+        </div>
         <button onclick="addSpend()">Add Spend</button>
 
-        <h3>Remaining Budget:</h3>
-        <div>Food: $<span id="foodBudget">0.00</span></div>
-        <div class="progress-bar" id="foodProgressBar"><div style="width: 100%; background-color: green;"></div></div>
+        <div class="summary">
+            <h3>Remaining Budget:</h3>
+            <div>Food: $<span id="foodBudget">0.00</span></div>
+            <div>Gas: $<span id="gasBudget">0.00</span></div>
+            <div>Miscellaneous: $<span id="miscBudget">0.00</span></div>
+        </div>
 
-        <div>Gas: $<span id="gasBudget">0.00</span></div>
-        <div class="progress-bar" id="gasProgressBar"><div style="width: 100%; background-color: green;"></div></div>
+        <div class="progress-bar-container">
+            <h4>Budget Progress:</h4>
+            <div>Food</div>
+            <div class="progress-bar"><div id="foodProgress" class="progress-bar-fill" style="width: 0%"></div></div>
 
-        <div>Miscellaneous: $<span id="miscBudget">0.00</span></div>
-        <div class="progress-bar" id="miscProgressBar"><div style="width: 100%; background-color: green;"></div></div>
+            <div>Gas</div>
+            <div class="progress-bar"><div id="gasProgress" class="progress-bar-fill" style="width: 0%"></div></div>
 
-        <button onclick="resetBudget()">Reset Budget</button>
-        <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+            <div>Miscellaneous</div>
+            <div class="progress-bar"><div id="miscProgress" class="progress-bar-fill" style="width: 0%"></div></div>
+        </div>
+
+        <button class="reset-button" onclick="resetBudgets()">Reset Budget</button>
     </div>
 
     <script>
@@ -140,19 +182,16 @@
             gasBudget = parseFloat(gasInput.value) || 0;
             miscBudget = parseFloat(miscInput.value) || 0;
 
-            // Update the UI
             document.getElementById('foodBudget').textContent = foodBudget.toFixed(2);
             document.getElementById('gasBudget').textContent = gasBudget.toFixed(2);
             document.getElementById('miscBudget').textContent = miscBudget.toFixed(2);
 
             updateProgressBars();
 
-            // Save to localStorage
             localStorage.setItem('foodBudget', foodBudget);
             localStorage.setItem('gasBudget', gasBudget);
             localStorage.setItem('miscBudget', miscBudget);
 
-            // Clear input fields
             foodInput.value = '';
             gasInput.value = '';
             miscInput.value = '';
@@ -192,12 +231,9 @@
                         break;
                 }
                 updateProgressBars();
-
-                // Save updated values to localStorage
                 localStorage.setItem('foodBudget', foodBudget);
                 localStorage.setItem('gasBudget', gasBudget);
                 localStorage.setItem('miscBudget', miscBudget);
-
                 amountInput.value = '';
             } else {
                 alert('Please enter a valid amount');
@@ -205,44 +241,46 @@
         }
 
         function updateProgressBars() {
-            const totalBudget = foodBudget + gasBudget + miscBudget;
-            document.getElementById('foodProgressBar').children[0].style.width = (foodBudget / totalBudget) * 100 + '%';
-            document.getElementById('gasProgressBar').children[0].style.width = (gasBudget / totalBudget) * 100 + '%';
-            document.getElementById('miscProgressBar').children[0].style.width = (miscBudget / totalBudget) * 100 + '%';
+            const foodProgress = (foodBudget / parseFloat(localStorage.getItem('foodBudget') || 1)) * 100;
+            const gasProgress = (gasBudget / parseFloat(localStorage.getItem('gasBudget') || 1)) * 100;
+            const miscProgress = (miscBudget / parseFloat(localStorage.getItem('miscBudget') || 1)) * 100;
+
+            document.getElementById('foodProgress').style.width = `${foodProgress}%`;
+            document.getElementById('gasProgress').style.width = `${gasProgress}%`;
+            document.getElementById('miscProgress').style.width = `${miscProgress}%`;
         }
 
-        function resetBudget() {
-            localStorage.clear();
+        function resetBudgets() {
+            localStorage.removeItem('foodBudget');
+            localStorage.removeItem('gasBudget');
+            localStorage.removeItem('miscBudget');
             foodBudget = 0.0;
             gasBudget = 0.0;
             miscBudget = 0.0;
 
-            // Update the UI
+            document.getElementById('foodBudget').textContent = '0.00';
+            document.getElementById('gasBudget').textContent = '0.00';
+            document.getElementById('miscBudget').textContent = '0.00';
+
+            updateProgressBars();
+        }
+
+        window.onload = function() {
+            const savedFoodBudget = localStorage.getItem('foodBudget');
+            const savedGasBudget = localStorage.getItem('gasBudget');
+            const savedMiscBudget = localStorage.getItem('miscBudget');
+
+            if (savedFoodBudget) foodBudget = parseFloat(savedFoodBudget);
+            if (savedGasBudget) gasBudget = parseFloat(savedGasBudget);
+            if (savedMiscBudget) miscBudget = parseFloat(savedMiscBudget);
+
             document.getElementById('foodBudget').textContent = foodBudget.toFixed(2);
             document.getElementById('gasBudget').textContent = gasBudget.toFixed(2);
             document.getElementById('miscBudget').textContent = miscBudget.toFixed(2);
 
             updateProgressBars();
-        }
-
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            document.querySelector('.container').classList.toggle('dark-mode');
-        }
-
-        // On page load, load saved data from localStorage
-        window.onload = () => {
-            foodBudget = parseFloat(localStorage.getItem('foodBudget')) || 0;
-            gasBudget = parseFloat(localStorage.getItem('gasBudget')) || 0;
-            miscBudget = parseFloat(localStorage.getItem('miscBudget')) || 0;
-
-            // Update the UI
-            document.getElementById('foodBudget').textContent = foodBudget.toFixed(2);
-            document.getElementById('gasBudget').textContent = gasBudget.toFixed(2);
-            document.getElementById('miscBudget').textContent = miscBudget.toFixed(2);
-
-            updateProgressBars();
-        }
+        };
     </script>
+
 </body>
 </html>
