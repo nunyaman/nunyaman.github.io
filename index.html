@@ -50,6 +50,17 @@
             color: #333;
         }
 
+        .budget-summary {
+            font-size: 18px;
+            margin: 15px 0;
+            color: #333;
+            text-align: center;
+        }
+
+        .budget-summary span {
+            font-weight: bold;
+        }
+
         input, select, button {
             width: 100%;
             padding: 10px;
@@ -67,12 +78,6 @@
 
         button:hover {
             background-color: #2980b9;
-        }
-
-        .summary {
-            margin-top: 20px;
-            font-size: 16px;
-            color: #333;
         }
 
         .category-icon {
@@ -96,10 +101,24 @@
             color: #fff;
         }
 
+        .button-section {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .button-section button {
+            width: 48%;
+            margin-top: 10px;
+        }
+
         @media (max-width: 600px) {
             .container {
                 width: 90%;
                 max-width: 350px;
+            }
+            .button-section button {
+                width: 100%;
             }
         }
     </style>
@@ -108,12 +127,22 @@
     <div class="container">
         <h1>Spend Manager</h1>
 
+        <!-- Display Remaining Budgets at the Top -->
+        <div class="budget-summary">
+            <h3>Remaining Budget:</h3>
+            <div><img class="category-icon" src="https://img.icons8.com/ios/50/000000/meal.png" alt="Food Icon">Food: $<span id="foodBudget">0.00</span></div>
+            <div><img class="category-icon" src="https://img.icons8.com/ios/50/000000/gas-station.png" alt="Gas Icon">Gas: $<span id="gasBudget">0.00</span></div>
+            <div><img class="category-icon" src="https://img.icons8.com/ios/50/000000/box.png" alt="Misc Icon">Miscellaneous: $<span id="miscBudget">0.00</span></div>
+        </div>
+
+        <!-- Set Budgets Section -->
         <h3>Set Budgets:</h3>
         <input type="number" id="foodBudgetInput" placeholder="Set Food Budget">
         <input type="number" id="gasBudgetInput" placeholder="Set Gas Budget">
         <input type="number" id="miscBudgetInput" placeholder="Set Miscellaneous Budget">
         <button onclick="setBudgets()">Set Budgets</button>
 
+        <!-- Add Spend Section -->
         <h3>Add Spend:</h3>
         <input type="number" id="amountInput" placeholder="Enter Amount">
         <select id="categorySelect">
@@ -123,15 +152,11 @@
         </select>
         <button onclick="addSpend()">Add Spend</button>
 
-        <div class="summary">
-            <h3>Remaining Budget:</h3>
-            <div><img class="category-icon" src="https://img.icons8.com/ios/50/000000/meal.png" alt="Food Icon">Food: $<span id="foodBudget">0.00</span></div>
-            <div><img class="category-icon" src="https://img.icons8.com/ios/50/000000/gas-station.png" alt="Gas Icon">Gas: $<span id="gasBudget">0.00</span></div>
-            <div><img class="category-icon" src="https://img.icons8.com/ios/50/000000/box.png" alt="Misc Icon">Miscellaneous: $<span id="miscBudget">0.00</span></div>
+        <!-- Action Buttons -->
+        <div class="button-section">
+            <button onclick="resetBudget()">Reset Budget</button>
+            <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
         </div>
-
-        <button onclick="resetBudget()">Reset Budget</button>
-        <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
     </div>
 
     <script>
