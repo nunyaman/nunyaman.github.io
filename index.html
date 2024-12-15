@@ -3,112 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#3498db">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Spend Manager</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Link to App Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Link to App Icon -->
+    <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/192/000000/money-bag.png">
+    <link rel="icon" href="https://img.icons8.com/fluency/192/000000/money-bag.png" type="image/png">
+
+    <!-- Styles -->
     <style>
-        /* General Styling */
         body {
-            font-family: 'Roboto', sans-serif;
-            background: #f4f6f8;
+            font-family: Arial, sans-serif;
             margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
+            background-color: #f5f5f5;
         }
 
         .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 480px;
-            background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            padding: 20px 30px;
-            box-sizing: border-box;
+            max-width: 400px;
+            text-align: center;
         }
 
         h1 {
-            text-align: center;
-            font-size: 2rem;
-            color: #2c3e50;
             margin-bottom: 20px;
-        }
-
-        /* Budget Cards */
-        .budget-card {
-            background: #f9fafb;
-            padding: 15px 20px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .budget-card h2 {
-            font-size: 1rem;
-            color: #34495e;
-            margin: 0;
-        }
-
-        .budget-card span {
-            font-size: 1.25rem;
-            font-weight: bold;
+            font-size: 28px;
             color: #3498db;
         }
 
-        /* Input Groups */
-        .input-group {
-            margin-bottom: 20px;
+        h3 {
+            margin-top: 10px;
+            font-size: 18px;
+            color: #333;
         }
 
         input, select, button {
             width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-            box-sizing: border-box;
-            font-size: 1rem;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
         button {
             background-color: #3498db;
-            color: #fff;
+            color: white;
             border: none;
-            font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s ease;
         }
 
         button:hover {
             background-color: #2980b9;
         }
 
-        /* Dark Mode */
+        .summary {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .category-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+        }
+
         .dark-mode {
-            background: #2c3e50;
-            color: #ecf0f1;
-        }
-
-        .dark-mode .container {
-            background: #34495e;
-        }
-
-        .dark-mode .budget-card {
-            background: #3d566e;
-            color: #ecf0f1;
-        }
-
-        .dark-mode input, .dark-mode select {
-            background: #3d566e;
-            color: #ecf0f1;
-            border-color: #555;
+            background-color: #333;
+            color: #fff;
         }
 
         .dark-mode button {
-            background: #2980b9;
+            background-color: #444;
+            color: #fff;
+        }
+
+        .dark-mode input, .dark-mode select {
+            background-color: #555;
+            color: #fff;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: 90%;
+                max-width: 350px;
+            }
         }
     </style>
 </head>
@@ -116,42 +108,28 @@
     <div class="container">
         <h1>Spend Manager</h1>
 
-        <!-- Remaining Budget Cards -->
-        <div class="budget-card">
-            <h2>Food</h2>
-            <span id="foodBudget">$0.00</span>
-        </div>
-        <div class="budget-card">
-            <h2>Gas</h2>
-            <span id="gasBudget">$0.00</span>
-        </div>
-        <div class="budget-card">
-            <h2>Miscellaneous</h2>
-            <span id="miscBudget">$0.00</span>
+        <h3>Set Budgets:</h3>
+        <input type="number" id="foodBudgetInput" placeholder="Set Food Budget">
+        <input type="number" id="gasBudgetInput" placeholder="Set Gas Budget">
+        <input type="number" id="miscBudgetInput" placeholder="Set Miscellaneous Budget">
+        <button onclick="setBudgets()">Set Budgets</button>
+
+        <h3>Add Spend:</h3>
+        <input type="number" id="amountInput" placeholder="Enter Amount">
+        <select id="categorySelect">
+            <option value="Food">Food</option>
+            <option value="Gas">Gas</option>
+            <option value="Misc">Miscellaneous</option>
+        </select>
+        <button onclick="addSpend()">Add Spend</button>
+
+        <div class="summary">
+            <h3>Remaining Budget:</h3>
+            <div><img class="category-icon" src="https://img.icons8.com/ios/50/000000/meal.png" alt="Food Icon">Food: $<span id="foodBudget">0.00</span></div>
+            <div><img class="category-icon" src="https://img.icons8.com/ios/50/000000/gas-station.png" alt="Gas Icon">Gas: $<span id="gasBudget">0.00</span></div>
+            <div><img class="category-icon" src="https://img.icons8.com/ios/50/000000/box.png" alt="Misc Icon">Miscellaneous: $<span id="miscBudget">0.00</span></div>
         </div>
 
-        <!-- Set Budgets Section -->
-        <div class="input-group">
-            <h3>Set Budgets</h3>
-            <input type="number" id="foodBudgetInput" placeholder="Set Food Budget">
-            <input type="number" id="gasBudgetInput" placeholder="Set Gas Budget">
-            <input type="number" id="miscBudgetInput" placeholder="Set Misc Budget">
-            <button onclick="setBudgets()">Set Budgets</button>
-        </div>
-
-        <!-- Add Spend Section -->
-        <div class="input-group">
-            <h3>Add Spend</h3>
-            <input type="number" id="amountInput" placeholder="Enter Amount">
-            <select id="categorySelect">
-                <option value="Food">Food</option>
-                <option value="Gas">Gas</option>
-                <option value="Misc">Miscellaneous</option>
-            </select>
-            <button onclick="addSpend()">Add Spend</button>
-        </div>
-
-        <!-- Utility Buttons -->
         <button onclick="resetBudget()">Reset Budget</button>
         <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
     </div>
@@ -161,11 +139,12 @@
         let gasBudget = 0.0;
         let miscBudget = 0.0;
 
-        // Initialize budgets from localStorage
-        window.onload = function () {
+        // Load budgets from localStorage
+        window.onload = function() {
             foodBudget = parseFloat(localStorage.getItem("foodBudget")) || 0.0;
             gasBudget = parseFloat(localStorage.getItem("gasBudget")) || 0.0;
             miscBudget = parseFloat(localStorage.getItem("miscBudget")) || 0.0;
+
             updateUI();
         };
 
@@ -178,6 +157,7 @@
             gasBudget = parseFloat(gasInput.value) || 0;
             miscBudget = parseFloat(miscInput.value) || 0;
 
+            // Save to localStorage
             localStorage.setItem("foodBudget", foodBudget);
             localStorage.setItem("gasBudget", gasBudget);
             localStorage.setItem("miscBudget", miscBudget);
@@ -196,19 +176,43 @@
             const category = categorySelect.value;
 
             if (!isNaN(amount) && amount > 0) {
-                if (category === "Food") foodBudget -= amount;
-                else if (category === "Gas") gasBudget -= amount;
-                else miscBudget -= amount;
-
-                localStorage.setItem("foodBudget", foodBudget);
-                localStorage.setItem("gasBudget", gasBudget);
-                localStorage.setItem("miscBudget", miscBudget);
-
+                switch (category) {
+                    case 'Food':
+                        if (foodBudget - amount >= 0) {
+                            foodBudget -= amount;
+                            localStorage.setItem("foodBudget", foodBudget);
+                        } else {
+                            alert('Insufficient budget for Food!');
+                        }
+                        break;
+                    case 'Gas':
+                        if (gasBudget - amount >= 0) {
+                            gasBudget -= amount;
+                            localStorage.setItem("gasBudget", gasBudget);
+                        } else {
+                            alert('Insufficient budget for Gas!');
+                        }
+                        break;
+                    case 'Misc':
+                        if (miscBudget - amount >= 0) {
+                            miscBudget -= amount;
+                            localStorage.setItem("miscBudget", miscBudget);
+                        } else {
+                            alert('Insufficient budget for Miscellaneous!');
+                        }
+                        break;
+                }
                 updateUI();
                 amountInput.value = '';
             } else {
-                alert('Please enter a valid amount.');
+                alert('Please enter a valid amount');
             }
+        }
+
+        function updateUI() {
+            document.getElementById('foodBudget').textContent = foodBudget.toFixed(2);
+            document.getElementById('gasBudget').textContent = gasBudget.toFixed(2);
+            document.getElementById('miscBudget').textContent = miscBudget.toFixed(2);
         }
 
         function resetBudget() {
@@ -216,18 +220,18 @@
             gasBudget = 0.0;
             miscBudget = 0.0;
 
-            localStorage.clear();
+            // Clear localStorage
+            localStorage.removeItem("foodBudget");
+            localStorage.removeItem("gasBudget");
+            localStorage.removeItem("miscBudget");
+
             updateUI();
         }
 
-        function updateUI() {
-            document.getElementById("foodBudget").innerText = `$${foodBudget.toFixed(2)}`;
-            document.getElementById("gasBudget").innerText = `$${gasBudget.toFixed(2)}`;
-            document.getElementById("miscBudget").innerText = `$${miscBudget.toFixed(2)}`;
-        }
-
         function toggleDarkMode() {
-            document.body.classList.toggle("dark-mode");
+            document.body.classList.toggle('dark-mode');
+            const container = document.querySelector('.container');
+            container.classList.toggle('dark-mode');
         }
     </script>
 </body>
